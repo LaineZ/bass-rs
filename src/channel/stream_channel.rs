@@ -1,26 +1,18 @@
-
 use std::ops::Deref;
 use std::ffi::c_void;
 
-use bass_sys::BassChannelInfo;
-
-use crate::*;
-use crate::channel::*;
-use crate::traits::Len;
-use crate::bass_error::BassResult;
-
+use crate::prelude::*;
 
 pub struct StreamChannel {
-    channel: Channel
+    pub channel: Channel
 }
 impl StreamChannel {
-    pub fn create_from_memory(bytes: &Vec<u8>, offset: impl Len) -> BassResult<Self> {
-
+    pub fn create_from_memory(bytes: &Vec<u8>, offset: impl IntoLen) -> BassResult<Self> {
         // create the stream
         let handle = bass_sys::BASS_StreamCreateFile(
             1,
             bytes.as_ptr() as *const c_void,
-            offset.len(),
+            offset.into_len(),
             bytes.len() as u64,
             0
         );
@@ -35,10 +27,6 @@ impl StreamChannel {
             channel: Channel::new(handle)
         })
     }
-
-    // pub fn create() -> BassResult<Self> {
-
-    // }
 
 }
 impl Deref for StreamChannel {

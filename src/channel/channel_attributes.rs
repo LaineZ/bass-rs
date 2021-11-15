@@ -1,5 +1,6 @@
 use crate::prelude::*;
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ChannelAttribute {
     /// The sample rate, 100 (min) to 100000 (max), 0 = original rate (when the channel was created).
     Frequency,

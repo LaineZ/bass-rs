@@ -29,6 +29,15 @@ pub fn test() {
     // try playing
     check!(stream.play(false));
 
+    check!(stream.set_position(20.0));
+    check!(stream.set_volume(0.1));
+    check!(stream.set_attribute(ChannelAttribute::Pan, -1.0));
+    // println!("pan: {}", check!(stream.get_attribute(ChannelAttribute::Pan)));
+
+
+    // let stream2 = stream.clone();
+    // drop(stream);
+
     // give it some time to play
     loop {}
 }

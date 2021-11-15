@@ -15,7 +15,10 @@ macro_rules! check_bass_err {
 #[macro_export]
 macro_rules! check_bass_err_val {
     ($check:expr, $err_val:expr) => {
-        $crate::check_bass_err_bool!($check == $err_val)
+        {
+            $crate::check_bass_err_bool!($check == $err_val);
+            $check
+        }
     };
 }
 

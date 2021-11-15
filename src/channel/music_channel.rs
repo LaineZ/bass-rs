@@ -8,8 +8,8 @@ pub struct MusicChannel {
 
 // statics
 impl MusicChannel {
-    pub fn load_from_memory(data: Vec<u8>, offset: impl Len, flags: u32, freq: u32) -> BassResult<Self> {
-        let handle = BASS_MusicLoad(true.ibool(), data.as_ptr() as *const std::ffi::c_void, offset.len(), data.len() as u32, flags, freq);
+    pub fn load_from_memory(data: Vec<u8>, offset: impl IntoLen, flags: u32, freq: u32) -> BassResult<Self> {
+        let handle = BASS_MusicLoad(true.ibool(), data.as_ptr() as *const std::ffi::c_void, offset.into_len(), data.len() as u32, flags, freq);
         check_bass_err!(handle);
         
         //TODO!: is there more checking we need to do?
@@ -43,6 +43,7 @@ impl Deref for MusicChannel {
 }
 
 // music channel attributes
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum MusicAttribute {
     /// The amplification level, 0 (min) to 100 (max) rounded down to a whole number.
     Amplify,
