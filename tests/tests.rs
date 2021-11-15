@@ -31,7 +31,11 @@ pub fn test() {
 
     check!(stream.set_position(20.0));
     check!(stream.set_volume(0.1));
-    check!(stream.set_attribute(ChannelAttribute::Pan, -1.0));
+    // check!(stream.set_attribute(ChannelAttribute::Pan, -1.0));
+
+    let current_freq = check!(stream.get_attribute(ChannelAttribute::Frequency));
+    check!(stream.set_attribute(ChannelAttribute::Frequency, current_freq * 1.7));
+
     // println!("pan: {}", check!(stream.get_attribute(ChannelAttribute::Pan)));
 
 
