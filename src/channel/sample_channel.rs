@@ -9,7 +9,6 @@ pub struct SampleChannel {
     newest_channel: Channel
 }
 impl SampleChannel {
-
     fn new(handle: u32) -> BassResult<Self> {
         let mut sc = Self {
             handle: Arc::new(handle),
@@ -20,7 +19,7 @@ impl SampleChannel {
         Ok(sc)
     }
 
-    pub fn sample_from_mem(data: &Vec<u8>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
+    pub fn load_from_mem(data: &Vec<u8>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
         Self::new(check_bass_err!(BASS_SampleLoad(
             true.ibool(), 
             data.as_ptr() as *const std::ffi::c_void, 
@@ -36,6 +35,18 @@ impl SampleChannel {
         Ok(self.newest_channel.clone())
     }
 }
+impl Drop for SampleChannel {
+    fn drop(&mut self) {
+        let count = Arc::<u32>::strong_count(&self.handle);
+        if count == 1 {
+            // need to free the bass channel
+            if BASS_SampleFree(*self.handle) == 0 {
+                panic!("error dropping sample")
+            }
+        }
+    }
+}
+
 
 impl Deref for SampleChannel {
     type Target = Channel;
