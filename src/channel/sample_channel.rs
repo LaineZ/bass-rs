@@ -19,7 +19,7 @@ impl SampleChannel {
         Ok(sc)
     }
 
-    pub fn load_from_mem(data: &Vec<u8>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
+    pub fn load_from_memory(data: &Vec<u8>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
         Self::new(check_bass_err!(BASS_SampleLoad(
             true.ibool(), 
             data.as_ptr() as *const std::ffi::c_void, 
