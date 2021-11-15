@@ -2,6 +2,7 @@ use std::ops::Deref;
 
 use crate::prelude::*;
 
+#[derive(Clone)]
 pub struct MusicChannel {
     channel: Channel
 }

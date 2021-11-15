@@ -3,6 +3,7 @@ use std::ffi::c_void;
 
 use crate::prelude::*;
 
+#[derive(Clone)]
 pub struct StreamChannel {
     pub channel: Channel
 }

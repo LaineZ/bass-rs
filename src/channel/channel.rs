@@ -1,5 +1,6 @@
 #![allow(unused_variables, dead_code)]
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
+use once_cell::sync::Lazy;
 
 use crate::prelude::*;
 
@@ -61,6 +62,26 @@ impl Channel {
         Ok(())
     }
 
+    pub fn get_playback_state(&self) -> BassResult<PlaybackState> {
+        let val:PlaybackState = BASS_ChannelIsActive(*self.handle).into();
+
+        // if the val is `stopped` it may be an error
+        if let PlaybackState::Stopped = val {
+            match BassError::from_code(bass_sys::BASS_ErrorGetCode()) {
+                BassError::Ok => {} // not an error, channel is just stopped
+                err => return Err(err)
+            }
+        }
+
+        Ok(val)
+    }
+
+
+    pub fn get_data(&self, mode: DataType, length:impl IntoLen) -> BassResult<Vec<f32>> {
+        let mut data:Vec<f32> = Vec::with_capacity(length.into_len() as usize);
+        check_bass_err_val!(BASS_ChannelGetData(*self.handle, data.as_mut_ptr() as *mut std::ffi::c_void, length.into_len() as u32), u32::MAX);
+        Ok(data)
+    }
 
     // convenience functions
     pub fn get_volume(&self) -> BassResult<f32> {
@@ -80,4 +101,39 @@ impl Drop for Channel {
             }
         }
     }
+}
+
+const ERROR_MAP: Lazy<HashMap<u32, PlaybackState>> = Lazy::new(|| {
+    use PlaybackState::*;
+
+    HashMap::from([
+        (BASS_ACTIVE_STOPPED, Stopped),
+        (BASS_ACTIVE_PLAYING, Playing),
+        (BASS_ACTIVE_PAUSED, Paused),
+        (BASS_ACTIVE_PAUSED_DEVICE, PausedDevice),
+        (BASS_ACTIVE_STALLED, Stalled),
+    ])
+});
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum PlaybackState {
+    Stopped,
+    Playing,
+    Paused,
+    PausedDevice,
+    Stalled
+}
+impl From<u32> for PlaybackState {
+    fn from(i: u32) -> Self {
+        match ERROR_MAP.get(&i) {
+            Some(&state) => state,
+            None => PlaybackState::Stalled
+        }
+    }
+}
+
+
+
+pub enum DataType {
+
 }

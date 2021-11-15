@@ -1,6 +1,5 @@
 #![allow(unused_variables, dead_code, non_snake_case)]
 use std::{collections::HashMap};
-
 use once_cell::sync::Lazy;
 
 pub type BassResult<T> = Result<T, BassError>;
