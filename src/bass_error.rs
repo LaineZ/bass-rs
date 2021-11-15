@@ -1,4 +1,52 @@
+#![allow(unused_variables, dead_code, non_snake_case)]
+use std::{collections::HashMap};
+
+use once_cell::sync::Lazy;
+
 pub type BassResult<T> = Result<T, BassError>;
+const ERROR_MAP: Lazy<HashMap<i32, BassError>> = Lazy::new(|| {
+    use BassError::*;
+    use bass_sys::*;
+
+    HashMap::from([
+        (BASS_OK, BassError::Ok),
+        (BASS_ERROR_MEM, Mem),
+        (BASS_ERROR_FILEOPEN, FileOpen),
+        (BASS_ERROR_DRIVER, Driver),
+        (BASS_ERROR_BUFLOST, BufLost),
+        (BASS_ERROR_HANDLE, Handle),
+        (BASS_ERROR_FORMAT, Format),
+        (BASS_ERROR_POSITION, Position),
+        (BASS_ERROR_INIT, Init),
+        (BASS_ERROR_START, Start),
+        (BASS_ERROR_ALREADY, Already),
+        (BASS_ERROR_NOTAUDIO, Notaudio),
+        (BASS_ERROR_NOCHAN, Nochan),
+        (BASS_ERROR_ILLTYPE, Illtype),
+        (BASS_ERROR_ILLPARAM, Illparam),
+        (BASS_ERROR_NO3D, No3d),
+        (BASS_ERROR_NOEAX, Noeax),
+        (BASS_ERROR_DEVICE, Device),
+        (BASS_ERROR_NOPLAY, Noplay),
+        (BASS_ERROR_FREQ, Freq),
+        (BASS_ERROR_NOTFILE, Notfile),
+        (BASS_ERROR_NOHW, Nohw),
+        (BASS_ERROR_EMPTY, Empty),
+        (BASS_ERROR_NONET, Nonet),
+        (BASS_ERROR_CREATE, Create),
+        (BASS_ERROR_NOFX, Nofx),
+        (BASS_ERROR_NOTAVAIL, Notavail),
+        (BASS_ERROR_DECODE, Decode),
+        (BASS_ERROR_DX, Dx),
+        (BASS_ERROR_TIMEOUT, Timeout),
+        (BASS_ERROR_FILEFORM, Fileform),
+        (BASS_ERROR_SPEAKER, Speaker),
+        (BASS_ERROR_VERSION, Version),
+        (BASS_ERROR_CODEC, Codec),
+        (BASS_ERROR_ENDED, Ended),
+        (BASS_ERROR_BUSY, Busy),
+    ])
+});
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum BassError {
@@ -107,9 +155,10 @@ pub enum BassError {
 }
 impl BassError {
     pub fn from_code(bass_err:i32) -> Self {
-        match bass_err {
-
-            other => BassError::Unknown(other)
+        if let Some(&err) = ERROR_MAP.get(&bass_err) {
+            err
+        } else {
+            Self::Unknown(bass_err)
         }
     }
 }

@@ -5,7 +5,7 @@
 #[macro_export]
 macro_rules! check_bass_err {
     ($check:expr) => {
-        check_bass_err_val!($check, 0)
+        $crate::check_bass_err_val!($check, 0)
     };
 }
 
@@ -15,9 +15,7 @@ macro_rules! check_bass_err {
 #[macro_export]
 macro_rules! check_bass_err_val {
     ($check:expr, $err_val:expr) => {
-        if $check == $err_val {
-            return Err(BassError::from_code(BASS_ErrorGetCode()));
-        }
+        $crate::check_bass_err_bool!($check == $err_val)
     };
 }
 
@@ -28,7 +26,7 @@ macro_rules! check_bass_err_val {
 macro_rules! check_bass_err_bool {
     ($check:expr) => {
         if $check {
-            return Err(BassError::from_code(BASS_ErrorGetCode()));
+            return Err($crate::bass_error::BassError::from_code(bass_sys::BASS_ErrorGetCode()));
         }
     };
 }
