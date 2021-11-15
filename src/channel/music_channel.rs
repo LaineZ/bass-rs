@@ -10,8 +10,14 @@ pub struct MusicChannel {
 // statics
 impl MusicChannel {
     pub fn load_from_memory(data: Vec<u8>, offset: impl IntoLen, flags: u32, freq: u32) -> BassResult<Self> {
-        let handle = BASS_MusicLoad(true.ibool(), data.as_ptr() as *const std::ffi::c_void, offset.into_len(), data.len() as u32, flags, freq);
-        check_bass_err!(handle);
+        let handle = check_bass_err!(BASS_MusicLoad(
+            true.ibool(), 
+            data.as_ptr() as *const std::ffi::c_void, 
+            offset.into_len(), 
+            data.len() as u32, 
+            flags, 
+            freq
+        ));
         
         //TODO!: is there more checking we need to do?
 
