@@ -19,7 +19,7 @@ impl StreamChannel {
             bytes.as_ptr() as *const c_void,
             offset.into_len(),
             bytes.len() as u64,
-            0
+            BASS_STREAM_PRESCAN
         );
         // check for an error when creating the stream
         check_bass_err!(handle);
