@@ -89,6 +89,8 @@ impl Channel {
 
     pub fn get_data(&self, mode: DataType, length:impl IntoLen) -> BassResult<Vec<f32>> {
         let mut data:Vec<f32> = Vec::with_capacity(length.into_len() as usize);
+        // fill in data
+        for _ in 0..length.into_len() {data.push(0.0)}
         check_bass_err_val!(BASS_ChannelGetData(*self.handle, data.as_mut_ptr() as *mut std::ffi::c_void, length.into_len() as u32), u32::MAX);
         Ok(data)
     }
