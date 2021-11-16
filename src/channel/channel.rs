@@ -152,7 +152,47 @@ impl From<u32> for PlaybackState {
 }
 
 
-
 pub enum DataType {
+    Float,
+    Fixed,
+    FFT256,
+    FFT512,
+    FFT1024,
+    FFT2048,
+    FFT4096,
+    FFT8192,
+    FFT16384,
+    FFT32768,
+    FFTComplex,
 
+    FFTIndividual,
+    FFTNoWindow,
+    FFTNyquist,
+    FFTRemoveDC,
+    // FFTNoRemove,
+    FFTAvailable,
+}
+impl Into<u32> for DataType {
+    fn into(self) -> u32 {
+        use DataType::*;
+        match self {
+            Float => BASS_DATA_FLOAT,
+            Fixed => BASS_DATA_FIXED,
+            FFT256 => BASS_DATA_FFT256,
+            FFT512 => BASS_DATA_FFT512,
+            FFT1024 => BASS_DATA_FFT1024,
+            FFT2048 => BASS_DATA_FFT2048,
+            FFT4096 => BASS_DATA_FFT4096,
+            FFT8192 => BASS_DATA_FFT8192,
+            FFT16384 => BASS_DATA_FFT16384,
+            FFT32768 => BASS_DATA_FFT32768,
+            FFTComplex => BASS_DATA_FFT_COMPLEX,
+            FFTIndividual => BASS_DATA_FFT_INDIVIDUAL,
+            FFTNoWindow => BASS_DATA_FFT_NOWINDOW,
+            FFTNyquist => BASS_DATA_FFT_NYQUIST,
+            FFTRemoveDC => BASS_DATA_FFT_REMOVEDC,
+            // FFTNoRemove => BASS_DATA_NOREMOVE,
+            FFTAvailable => BASS_DATA_AVAILABLE,
+        }
+    }
 }
