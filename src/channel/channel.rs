@@ -1,10 +1,10 @@
 #![allow(unused_variables, dead_code)]
-use std::{collections::HashMap, sync::Arc};
 use once_cell::sync::Lazy;
+use std::{collections::HashMap, sync::Arc};
 
 use crate::prelude::*;
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct Channel {
     // pub(crate) 
     pub handle: Arc<u32>,
