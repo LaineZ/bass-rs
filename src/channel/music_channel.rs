@@ -52,6 +52,18 @@ impl Deref for MusicChannel {
     }
 }
 
+impl Drop for MusicChannel {
+    fn drop(&mut self) {
+        let count = Arc::<u32>::strong_count(&self.handle);
+        if count == 1 {
+            // need to free the bass channel
+            if BASS_StreamFree(*self.channel.handle) == 0 {
+                panic!("error dropping music channel: {:?}", BassError::get_last_error())
+            }
+        }
+    }
+}
+
 // music channel attributes
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum MusicAttribute {

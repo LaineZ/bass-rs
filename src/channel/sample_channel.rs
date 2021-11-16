@@ -49,7 +49,6 @@ impl Drop for SampleChannel {
     }
 }
 
-
 impl Deref for SampleChannel {
     type Target = Channel;
 

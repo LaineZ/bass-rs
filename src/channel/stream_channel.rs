@@ -46,7 +46,17 @@ impl Deref for StreamChannel {
         &self.channel
     }
 }
-
+impl Drop for StreamChannel {
+    fn drop(&mut self) {
+        let count = Arc::<u32>::strong_count(&self.handle);
+        if count == 1 {
+            // need to free the bass channel
+            if BASS_StreamFree(*self.channel.handle) == 0 {
+                panic!("error dropping stream: {:?}", BassError::get_last_error())
+            }
+        }
+    }
+}
 
 #[inline]
 fn new_channel_info() -> BassChannelInfo {

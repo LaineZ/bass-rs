@@ -12,7 +12,6 @@ pub struct Channel {
 }
 impl Channel {
     pub fn new(handle: u32) -> Self {
-
         let default_frequency = if handle != 0 {
             let mut value = 0.0;
             BASS_ChannelGetAttribute(handle, ChannelAttribute::Frequency.into(), &mut value);
@@ -114,13 +113,11 @@ impl Drop for Channel {
     fn drop(&mut self) {
         let count = Arc::<u32>::strong_count(&self.handle);
         if count == 1 {
-            // need to free the bass channel
-            if BASS_StreamFree(*self.handle) == 0 {
-                panic!("error dropping stream")
-            }
+            println!("channel getting dropped: {}", self.handle)
         }
     }
 }
+
 
 const ERROR_MAP: Lazy<HashMap<u32, PlaybackState>> = Lazy::new(|| {
     use PlaybackState::*;
