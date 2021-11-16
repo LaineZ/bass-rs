@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{ops::Deref, sync::Arc};
 
 use crate::prelude::*;
 
@@ -7,7 +7,7 @@ pub struct MusicChannel {
     channel: Channel,
 
     /// needed so the data stays in memory while its needed by bass
-    _data: Vec<u8>
+    _data: Arc<Vec<u8>>
 }
 
 // statics
@@ -23,10 +23,9 @@ impl MusicChannel {
         ));
         
         //TODO!: is there more checking we need to do?
-
         Ok(Self {
             channel: Channel::new(handle),
-            _data: data
+            _data: Arc::new(data)
         })
     }
 }

@@ -1,5 +1,6 @@
 use std::ops::Deref;
 use std::ffi::c_void;
+use std::sync::Arc;
 
 use crate::prelude::*;
 
@@ -8,7 +9,7 @@ pub struct StreamChannel {
     pub channel: Channel,
 
     /// needed so the data stays in memory while its needed by bass
-    _data: Vec<u8>
+    _data: Arc<Vec<u8>>
 }
 impl StreamChannel {
     pub fn create_from_memory(bytes: Vec<u8>, offset: impl IntoLen) -> BassResult<Self> {
@@ -29,7 +30,7 @@ impl StreamChannel {
         // should be good to go from here
         Ok(Self {
             channel: Channel::new(handle),
-            _data: bytes
+            _data: Arc::new(bytes)
         })
     }
 

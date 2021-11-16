@@ -7,14 +7,14 @@ use crate::prelude::*;
 pub struct SampleChannel {
     handle: Arc<u32>,
     newest_channel: Channel,
-    _data: Vec<u8>
+    _data: Arc<Vec<u8>>
 }
 impl SampleChannel {
     fn new(handle: u32, data: Vec<u8>) -> BassResult<Self> {
         let mut sc = Self {
             handle: Arc::new(handle),
             newest_channel: Channel::new(0),
-            _data: data
+            _data: Arc::new(data)
         };
         sc.get_channel()?;
 
