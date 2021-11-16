@@ -6,20 +6,22 @@ use crate::prelude::*;
 #[derive(Clone)]
 pub struct SampleChannel {
     handle: Arc<u32>,
-    newest_channel: Channel
+    newest_channel: Channel,
+    _data: Vec<u8>
 }
 impl SampleChannel {
-    fn new(handle: u32) -> BassResult<Self> {
+    fn new(handle: u32, data: Vec<u8>) -> BassResult<Self> {
         let mut sc = Self {
             handle: Arc::new(handle),
-            newest_channel: Channel::new(0)
+            newest_channel: Channel::new(0),
+            _data: data
         };
         sc.get_channel()?;
 
         Ok(sc)
     }
 
-    pub fn load_from_memory(data: &Vec<u8>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
+    pub fn load_from_memory(data: Vec<u8>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
         Self::new(check_bass_err!(BASS_SampleLoad(
             true.ibool(), 
             data.as_ptr() as *const std::ffi::c_void, 
@@ -27,7 +29,7 @@ impl SampleChannel {
             data.len() as u32, 
             max_channels, 
             0
-        )))
+        )), data)
     }
 
     pub fn get_channel(&mut self) -> BassResult<Channel> {

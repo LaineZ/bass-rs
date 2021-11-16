@@ -8,7 +8,7 @@ use crate::prelude::*;
 pub struct Channel {
     // pub(crate) 
     pub handle: Arc<u32>,
-    pub default_frequency: f32
+    pub default_frequency: f32,
 }
 impl Channel {
     pub fn new(handle: u32) -> Self {

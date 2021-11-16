@@ -17,12 +17,22 @@ pub fn test() {
     // init bass
     check!(bass::init_default());
 
-    // read test file
-    let file_path = "./test.mp3";
-    let bytes = std::fs::read(file_path).expect("Error reading ./test.mp3");
+    // // read test file
+    // let file_path = "./test.mp3";
+    // let bytes = std::fs::read(file_path).expect("Error reading ./test.mp3");
 
-    // create stream
-    let stream = check!(StreamChannel::create_from_memory(&bytes, 0));
+    // // create stream
+    // let stream = check!(StreamChannel::create_from_memory(&bytes, 0));
+
+    let stream = {
+            
+        let file_path = "./test.mp3";
+        let bytes = std::fs::read(file_path).expect("Error reading ./test.mp3");
+
+        // create stream
+        let stream = check!(StreamChannel::create_from_memory(bytes, 0));
+        stream
+    };
 
     // check!(stream.set_attribute(ChannelAttribute::MusicSpeed, 2.0));
 

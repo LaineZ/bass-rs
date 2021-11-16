@@ -5,10 +5,13 @@ use crate::prelude::*;
 
 #[derive(Clone)]
 pub struct StreamChannel {
-    pub channel: Channel
+    pub channel: Channel,
+
+    /// needed so the data stays in memory while its needed by bass
+    _data: Vec<u8>
 }
 impl StreamChannel {
-    pub fn create_from_memory(bytes: &Vec<u8>, offset: impl IntoLen) -> BassResult<Self> {
+    pub fn create_from_memory(bytes: Vec<u8>, offset: impl IntoLen) -> BassResult<Self> {
         // create the stream
         let handle = bass_sys::BASS_StreamCreateFile(
             1,
@@ -25,7 +28,8 @@ impl StreamChannel {
 
         // should be good to go from here
         Ok(Self {
-            channel: Channel::new(handle)
+            channel: Channel::new(handle),
+            _data: bytes
         })
     }
 

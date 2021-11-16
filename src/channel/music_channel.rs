@@ -4,7 +4,10 @@ use crate::prelude::*;
 
 #[derive(Clone)]
 pub struct MusicChannel {
-    channel: Channel
+    channel: Channel,
+
+    /// needed so the data stays in memory while its needed by bass
+    _data: Vec<u8>
 }
 
 // statics
@@ -22,7 +25,8 @@ impl MusicChannel {
         //TODO!: is there more checking we need to do?
 
         Ok(Self {
-            channel: Channel::new(handle)
+            channel: Channel::new(handle),
+            _data: data
         })
     }
 }
