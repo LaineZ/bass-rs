@@ -7,12 +7,23 @@ use crate::prelude::*;
 #[derive(Clone)]
 pub struct Channel {
     // pub(crate) 
-    pub handle: Arc<u32>
+    pub handle: Arc<u32>,
+    pub default_frequency: f32
 }
 impl Channel {
     pub fn new(handle: u32) -> Self {
+
+        let default_frequency = if handle != 0 {
+            let mut value = 0.0;
+            BASS_ChannelGetAttribute(handle, ChannelAttribute::Frequency.into(), &mut value);
+            value
+        } else {
+            0.0
+        };
+
         Self {
-            handle: Arc::new(handle)
+            handle: Arc::new(handle),
+            default_frequency
         }
     }
 
@@ -89,6 +100,14 @@ impl Channel {
     }
     pub fn set_volume(&self, vol: f32) -> BassResult<()> {
         self.set_attribute(ChannelAttribute::Volume, vol)
+    }
+
+
+    pub fn get_rate(&self) -> BassResult<f32> {
+        Ok(self.get_attribute(ChannelAttribute::Frequency)? / self.default_frequency)
+    }
+    pub fn set_rate(&self, rate: f32) -> BassResult<()> {
+        self.set_attribute(ChannelAttribute::Frequency, self.default_frequency * rate)
     }
 }
 impl Drop for Channel {

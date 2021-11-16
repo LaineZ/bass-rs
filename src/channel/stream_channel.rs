@@ -29,6 +29,10 @@ impl StreamChannel {
         })
     }
 
+    // pub fn create(freq: u64, ) -> BassResult<Self> {
+    //     BASS_StreamCreate(freq, channels, flags, )
+    // }
+
 }
 impl Deref for StreamChannel {
     type Target = Channel;
