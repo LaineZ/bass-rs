@@ -28,7 +28,7 @@ impl SampleChannel {
             offset.into_len(), 
             data.len() as u32, 
             max_channels, 
-            0
+            BASS_SAMPLE_OVER_POS
         )), data)
     }
 
