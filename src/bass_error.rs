@@ -160,4 +160,8 @@ impl BassError {
             Self::Unknown(bass_err)
         }
     }
+
+    pub fn get_last_error() -> Self {
+        Self::from_code(bass_sys::BASS_ErrorGetCode())
+    }
 }
