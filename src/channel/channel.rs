@@ -39,11 +39,11 @@ impl Channel {
 
     pub fn get_position(&self) -> BassResult<f64> {
         let pos = check_bass_err_val!(BASS_ChannelGetPosition(*self.handle, BASS_POS_BYTE), u64::MAX);
-        let secs = self.bytes2seconds(pos)?;
+        let secs = self.bytes2seconds(pos)? * 1000.0;
         Ok(secs)
     }
-    pub fn set_position(&self, secs:f64) -> BassResult<()> {
-        let pos = self.seconds2bytes(secs)?.into_len();
+    pub fn set_position(&self, ms:f64) -> BassResult<()> {
+        let pos = self.seconds2bytes(ms/1000.0)?.into_len();
         check_bass_err!(BASS_ChannelSetPosition(*self.handle, pos, BASS_POS_BYTE));
         Ok(())
     }
