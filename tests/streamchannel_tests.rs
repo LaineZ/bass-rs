@@ -1,5 +1,4 @@
-use bass::prelude::*;
-use bass::__bass_check;
+use bass_rs::prelude::*;
 
 pub fn stream_channel_tests() -> BassResult<()> {
 
@@ -9,28 +8,21 @@ pub fn stream_channel_tests() -> BassResult<()> {
         let bytes = std::fs::read(file_path).expect("Error reading ./test.mp3");
 
         // create stream
-        let stream = __bass_check!(StreamChannel::create_from_memory(bytes, 0));
+        let stream = StreamChannel::create_from_memory(bytes, 0)?;
         stream
     };
 
-    // __bass_check!(stream.set_attribute(ChannelAttribute::MusicSpeed, 2.0));
+    // stream.set_attribute(ChannelAttribute::MusicSpeed, 2.0)?;
 
     // try playing
-    __bass_check!(stream.play(false));
+    stream.play(false)?;
 
-    __bass_check!(stream.set_position(20.0));
-    __bass_check!(stream.set_volume(0.1));
-    // check!(stream.set_attribute(ChannelAttribute::Pan, -1.0));
+    stream.set_position(20.0)?;
+    stream.set_volume(0.1)?;
+    stream.set_attribute(ChannelAttribute::Pan, -1.0)?;
 
-    let current_freq = __bass_check!(stream.get_attribute(ChannelAttribute::Frequency));
-    __bass_check!(stream.set_attribute(ChannelAttribute::Frequency, current_freq * 1.7));
+    let current_freq = stream.get_attribute(ChannelAttribute::Frequency)?;
+    stream.set_attribute(ChannelAttribute::Frequency, current_freq * 1.7)?;
 
-    // println!("pan: {}", __bass_check!(stream.get_attribute(ChannelAttribute::Pan)));
-
-
-    // let stream2 = stream.clone();
-    // drop(stream);
-
-    // give it some time to play
-    loop {}
+    Ok(())
 }

@@ -3,6 +3,7 @@ pub(crate) use crate::{
     check_bass_err_val,
     check_bass_err_bool
 };
+pub(crate) use std::ffi::c_void;
 
 pub use crate::bass_error::*;
 

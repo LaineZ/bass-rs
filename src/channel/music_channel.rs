@@ -15,7 +15,7 @@ impl MusicChannel {
     pub fn load_from_memory(data: Vec<u8>, offset: impl IntoLen, flags: u32, freq: u32) -> BassResult<Self> {
         let handle = check_bass_err!(BASS_MusicLoad(
             true.ibool(), 
-            data.as_ptr() as *const std::ffi::c_void, 
+            data.as_ptr() as *const c_void, 
             offset.into_len(), 
             data.len() as u32, 
             flags, 

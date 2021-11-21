@@ -26,7 +26,7 @@ impl SampleChannel {
     pub fn load_from_memory(data: Vec<u8>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
         Self::new(check_bass_err!(BASS_SampleLoad(
             true.ibool(), 
-            data.as_ptr() as *const std::ffi::c_void, 
+            data.as_ptr() as *const c_void, 
             offset.into_len(), 
             data.len() as u32, 
             max_channels, 

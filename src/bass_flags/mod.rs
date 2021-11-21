@@ -1,5 +1,9 @@
+mod init_flags;
 mod device_flags;
+
+pub use init_flags::*;
 pub use device_flags::*;
+
 
 pub trait ToBassFlags<T> {
     fn to_flags(&self) -> Vec<T>;
@@ -15,9 +19,9 @@ macro_rules! __impl_BassFlags {
             fn to_flags(&self) -> Vec<$type> {
 
                 let mut list = Vec::new();
-                for (flag, value) in $items {
-                    if (self & flag) > 0 {
-                        list.push(value);
+                for (bass_flag, enum_value) in $items {
+                    if (self & bass_flag) > 0 {
+                        list.push(enum_value);
                     }
                 }
                 

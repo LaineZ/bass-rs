@@ -1,4 +1,4 @@
-use bass::prelude::*;
+use bass_rs::prelude::*;
 
 pub fn device_tests() -> BassResult<()> {
     let all_devices = BassDevice::get_all_devices()?;

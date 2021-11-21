@@ -6,7 +6,7 @@ use crate::prelude::*;
 
 #[derive(Clone, PartialEq)]
 pub struct Channel {
-    // pub(crate) 
+    // probably shouldnt be pub but whatever
     pub handle: Arc<u32>,
     pub default_frequency: f32,
 }
@@ -91,7 +91,7 @@ impl Channel {
         let mut data:Vec<f32> = Vec::with_capacity(length.into_len() as usize);
         // fill in data
         for _ in 0..length.into_len() {data.push(0.0)}
-        check_bass_err_val!(BASS_ChannelGetData(*self.handle, data.as_mut_ptr() as *mut std::ffi::c_void, mode.into()), u32::MAX);
+        check_bass_err_val!(BASS_ChannelGetData(*self.handle, data.as_mut_ptr() as *mut c_void, mode.into()), u32::MAX);
         Ok(data)
     }
 

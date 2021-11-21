@@ -1,6 +1,16 @@
-use bass::{*, __bass_check};
+use bass_rs::{*};
 
 mod device_tests;
+
+#[macro_export]
+macro_rules! __bass_check {
+    ($res:expr) => {
+        match $res {
+            Err(e) => panic!("Bass error: {:?}", e),
+            Ok(e) => e
+        }
+    };
+}
 
 #[test]
 pub fn test() {

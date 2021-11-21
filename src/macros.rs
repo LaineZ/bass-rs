@@ -33,14 +33,3 @@ macro_rules! check_bass_err_bool {
         }
     };
 }
-
-
-#[macro_export]
-macro_rules! __bass_check {
-    ($res:expr) => {
-        match $res {
-            Err(e) => panic!("Bass error: {:?}", e),
-            Ok(e) => e
-        }
-    };
-}

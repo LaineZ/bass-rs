@@ -69,7 +69,7 @@ impl Display for BassDevice {
 }
 
 
-fn pain(ugh: *const std::ffi::c_void) -> String {
+fn pain(ugh: *const c_void) -> String {
     unsafe {
         CStr::from_ptr(ugh as *const i8).to_string_lossy().to_string()
     }

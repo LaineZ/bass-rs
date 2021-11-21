@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "bass"
+name = "bass-rs"
 version = "0.1.0"
 dependencies = [
  "bass-sys",
