@@ -30,10 +30,10 @@ impl Bass {
         Ok(Self::new())
     }
 }
-// impl Drop for Bass {
-//     fn drop(&mut self) {
-//         if BASS_Free() == 0 {
-//             panic!("Bass failed to free: {:?}", BassError::get_last_error())
-//         }
-//     }
-// }
+impl Drop for Bass {
+    fn drop(&mut self) {
+        if BASS_Free() == 0 {
+            panic!("Bass failed to free: {:?}", BassError::get_last_error())
+        }
+    }
+}

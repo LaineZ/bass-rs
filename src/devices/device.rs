@@ -1,13 +1,13 @@
 use crate::{prelude::*};
 use std::ffi::CStr;
-use std::alloc::{Layout, alloc_zeroed, dealloc};
+use std::fmt::Display;
 
 
 pub struct BassDevice {
     pub id: u32,
     pub name: String,
     pub driver: String,
-    // pub flags: Vec<BassDeviceFlags>
+    pub flags: Vec<DeviceFlags>
 }
 impl BassDevice {
     pub fn get_all_devices() -> BassResult<Vec<BassDevice>> {
@@ -29,18 +29,19 @@ impl BassDevice {
             let name = pain(info.name);
             let driver = pain(info.driver);
 
-            list.push(Self::new(i, name, driver));
+            list.push(Self::new(i, name, driver, info.flags));
             i += 1;
         }
 
         Ok(list)
     }
 
-    fn new(id:u32, name:String, driver:String) -> Self {
+    fn new(id:u32, name:String, driver:String, flags: u32) -> Self {
         Self {
             id,
             name,
-            driver
+            driver,
+            flags: flags.to_flags()
         }
     }
 }
@@ -60,57 +61,16 @@ impl BassDevice {
 
 }
 
+// pretty logging c:
+impl Display for BassDevice {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}. {} ({}): {:?}", self.id, self.name, self.driver, self.flags)
+    }
+}
+
+
 fn pain(ugh: *const std::ffi::c_void) -> String {
     unsafe {
         CStr::from_ptr(ugh as *const i8).to_string_lossy().to_string()
     }
-}
-
-struct Cringe {
-    pub cap: usize,
-    data: *mut std::ffi::c_void
-}
-impl Cringe {
-    pub fn new(cap: usize) -> Self {
-        let data = unsafe {
-            alloc_zeroed(Layout::array::<std::os::raw::c_char>(cap).unwrap()) as *mut std::ffi::c_void
-        };
-
-        Self {
-            cap, 
-            data,
-        }
-    }
-    pub fn data(&mut self) -> *mut std::ffi::c_void {
-        self.data
-    }
-}
-impl ToString for Cringe {
-    fn to_string(&self) -> String {
-        unsafe {
-            CStr::from_ptr(self.data as *const i8).to_string_lossy().to_string()
-        }
-    }
-}
-impl Drop for Cringe {
-    fn drop(&mut self) {
-        unsafe {
-            dealloc(self.data as *mut u8, Layout::array::<std::os::raw::c_char>(self.cap).unwrap())
-        }
-    }
-}
-
-#[test]
-fn cringe_test() {
-    let mut new_cringe = Cringe::new(100);
-    for i in 0..10 {
-        let c = (i as u8 + 65) as char;
-        println!("adding: {}", c);
-        unsafe {
-            *(new_cringe.data().add(i) as *mut char) = c;
-        }
-    }
-
-    println!("new_cringe: {}", new_cringe.to_string());
-    panic!("show console output")
 }

@@ -11,6 +11,8 @@ pub fn test() {
     let bass = __bass_check!(Bass::init_default());
 
     __bass_check!(device_tests::device_tests());
+
+    drop(bass);
 }
 
 fn move_dll() {
