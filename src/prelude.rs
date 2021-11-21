@@ -11,3 +11,5 @@ pub(crate) use bass_sys::*;
 pub use crate::channel::*;
 
 pub use crate::traits::*;
+
+pub use crate::devices::*;

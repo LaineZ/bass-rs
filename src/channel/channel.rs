@@ -113,8 +113,9 @@ impl Channel {
 }
 impl Drop for Channel {
     fn drop(&mut self) {
-        let count = Arc::<u32>::strong_count(&self.handle);
+        #[cfg(feature="drop_debug")]
         if count == 1 {
+            let count = Arc::<u32>::strong_count(&self.handle);
             println!("channel getting dropped: {}", self.handle)
         }
     }

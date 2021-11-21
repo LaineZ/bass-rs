@@ -52,6 +52,7 @@ impl Deref for MusicChannel {
     }
 }
 
+// drop so the channel can be freed in bass
 impl Drop for MusicChannel {
     fn drop(&mut self) {
         let count = Arc::<u32>::strong_count(&self.handle);

@@ -1,4 +1,13 @@
-
 pub trait AsBassFlags {
-    fn as_flags(&self) -> u32;
+    fn to_num(self) -> u32;
+}
+impl<I:Iterator> AsBassFlags for I where I::Item: Into<u32> + Copy {
+    fn to_num(self) -> u32 {
+        let mut total = 0;
+
+        for i in self {
+            total += i.into()
+        }
+        total
+    }
 }

@@ -9,8 +9,7 @@ pub mod prelude;
 pub mod channel;
 pub mod bass_error;
 pub mod bass_flags;
-
-
+pub mod devices;
 
 pub fn init_default() -> BassResult<()> {
     check_bass_err!(bass_sys::BASS_Init(-1, 44100, BASS_DEVICE_LATENCY, 0 as *mut std::ffi::c_void, 0 as *mut std::ffi::c_void));
