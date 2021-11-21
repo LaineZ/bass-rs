@@ -1,3 +1,6 @@
+pub trait ToBassFlags<T> {
+    fn to_flags(&self) -> Vec<T>;
+}
 pub trait AsBassFlags {
     fn to_num(self) -> u32;
 }

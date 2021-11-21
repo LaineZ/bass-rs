@@ -1,14 +1,6 @@
-mod device_tests;
+use bass::{*, __bass_check};
 
-#[macro_export]
-macro_rules! check {
-    ($res:expr) => {
-        match $res {
-            Err(e) => panic!("Bass error: {:?}", e),
-            Ok(e) => e
-        }
-    };
-}
+mod device_tests;
 
 #[test]
 pub fn test() {
@@ -16,7 +8,9 @@ pub fn test() {
     move_dll();
 
     // init bass
-    check!(bass::init_default());
+    let bass = __bass_check!(Bass::init_default());
+
+    __bass_check!(device_tests::device_tests());
 }
 
 fn move_dll() {
