@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "bass-rs"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bass-sys",
  "once_cell",
@@ -12,9 +12,9 @@ dependencies = [
 
 [[package]]
 name = "bass-sys"
-version = "2.1.0"
+version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d8c962bfd1d725c9a9f7f3ef5f027cc17acba492dc1268c406315ce688add39"
+checksum = "28ef54f4e054449a532345e12bfb0b39e07cf82e3a41e9f787918bb745d62566"
 dependencies = [
  "libloading",
  "once_cell",
@@ -28,9 +28,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "libloading"
-version = "0.7.2"
+version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "afe203d669ec979b7128619bae5a63b7b42e9203c1b29146079ee05e2f604b52"
+checksum = "efbc0f03f9a775e9f6aed295c6a1ba2253c5757a9e03d55c6caa46a681abcddd"
 dependencies = [
  "cfg-if",
  "winapi",
@@ -38,9 +38,9 @@ dependencies = [
 
 [[package]]
 name = "once_cell"
-version = "1.8.0"
+version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "692fcb63b64b1758029e0a96ee63e049ce8c5948587f2f7208df04625e5f6b56"
+checksum = "87f3e037eac156d1775da914196f0f37741a274155e34a0b7e427c35d2a2ecb9"
 
 [[package]]
 name = "winapi"

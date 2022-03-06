@@ -1,8 +1,6 @@
 use bass_rs::{*};
-
 mod device_tests;
 
-#[macro_export]
 macro_rules! __bass_check {
     ($res:expr) => {
         match $res {

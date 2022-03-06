@@ -35,7 +35,7 @@ impl SampleChannel {
     }
 
     pub fn get_channel(&mut self) -> BassResult<Channel> {
-        self.newest_channel = Channel::new(check_bass_err!(BASS_SampleGetChannel(*self.handle, false.ibool())));
+        self.newest_channel = Channel::new(check_bass_err!(BASS_SampleGetChannel(*self.handle, false.ibool() as u32)));
         if !self.channels.contains(&self.newest_channel) {
             self.channels.push(self.newest_channel.clone());
         }
