@@ -4,6 +4,17 @@ use std::{collections::HashMap, sync::Arc};
 
 use crate::prelude::*;
 
+/// ## Bass Channel
+/// 
+/// This is the underlying Channel object for [`StreamChannel`], [`SampleChannel`] and [`MusicChannel`]
+/// 
+/// It is not recommended to create this object manually, as it requires a `handle` to the underlying bass stream.
+/// 
+/// # Dropping
+/// 
+/// This object is clone-able, and the underlying channel will be preserved.
+/// 
+/// Once the final reference has been dropped, the underlying channel will be freed
 #[derive(Clone, PartialEq)]
 pub struct Channel {
     // probably shouldnt be pub but whatever
@@ -11,6 +22,7 @@ pub struct Channel {
     pub default_frequency: f32,
 }
 impl Channel {
+    /// Create a new channel, where `handle` is the handle of the underlying bass channel
     pub fn new(handle: u32) -> Self {
         let default_frequency = if handle != 0 {
             let mut value = 0.0;
@@ -26,52 +38,87 @@ impl Channel {
         }
     }
 
+    /// Get a channel attribute
+    /// 
+    /// Returns an error if there was a problem getting the attribute
     pub fn get_attribute(&self, attrib: ChannelAttribute) -> BassResult<f32> {
         let mut value = 0.0;
         check_bass_err!(BASS_ChannelGetAttribute(*self.handle, attrib.into(), &mut value));
         Ok(value)
     }
+    /// Set a channel attribute
+    /// 
+    /// Returns an error if there was a problem setting the attribute (ie value is out of bounds for attribute)
     pub fn set_attribute(&self, attrib: ChannelAttribute, value: f32) -> BassResult<()> {
         check_bass_err!(BASS_ChannelSetAttribute(*self.handle, attrib.into(), value));
         Ok(())
     }
 
 
+    /// get the position of the audio in ms
+    /// 
+    /// returns an error if there was a problem getting the position
     pub fn get_position(&self) -> BassResult<f64> {
         let pos = check_bass_err_val!(BASS_ChannelGetPosition(*self.handle, BASS_POS_BYTE), u64::MAX);
         let secs = self.bytes2seconds(pos)? * 1000.0;
         Ok(secs)
     }
+
+    /// Set the position of the audio in ms
+    /// 
+    /// Returns an error if there was a problem setting the position (ie ms > stream length)
     pub fn set_position(&self, ms:f64) -> BassResult<()> {
         let pos = self.seconds2bytes(ms/1000.0)?.into_len();
         check_bass_err!(BASS_ChannelSetPosition(*self.handle, pos, BASS_POS_BYTE));
         Ok(())
     }
 
-
+    /// Get the time at the byte index, in seconds
+    /// 
+    /// Returns an error if there was a problem with the conversion (ie pos > len)
+    /// 
+    /// You probably dont need this
     pub fn bytes2seconds(&self, pos: impl IntoLen) -> BassResult<f64> {
         let secs = BASS_ChannelBytes2Seconds(*self.handle, pos.into_len());
         check_bass_err_bool!(secs < 0.0);
         Ok(secs)
     }
+    /// Get the byte index at the current time in seconds
+    /// 
+    /// Returns an error if there was a problem with the conversion (ie secs > len)
+    /// 
+    /// You probably dont need this
     pub fn seconds2bytes(&self, secs: f64) -> BassResult<impl IntoLen> {
         Ok(check_bass_err_val!(BASS_ChannelSeconds2Bytes(*self.handle, secs), u64::MAX))
     }
 
-
+    /// Play the audio, with the option to restart or not
+    /// 
+    /// Returns an error if there was an issue playing the audio
     pub fn play(&self, restart:bool) -> BassResult<()> {
         check_bass_err!(BASS_ChannelPlay(*self.handle, restart.ibool()));
         Ok(())
     }
+
+    /// Pause the audio
+    /// 
+    /// Returns an error if there was an issue pausing the audio
     pub fn pause(&self) -> BassResult<()> {
         check_bass_err!(BASS_ChannelPause(*self.handle));
         Ok(())
     }
+    
+    /// Stop the audio
+    /// 
+    /// Returns an error if there was an issue stopping the audio
     pub fn stop(&self) -> BassResult<()> {
         check_bass_err!(BASS_ChannelStop(*self.handle));
         Ok(())
     }
 
+    /// Get the [`PlaybackState`] of the channel
+    /// 
+    /// Returns an error if there was an issue getting the state
     pub fn get_playback_state(&self) -> BassResult<PlaybackState> {
         let val:PlaybackState = BASS_ChannelIsActive(*self.handle).into();
 
@@ -86,7 +133,11 @@ impl Channel {
         Ok(val)
     }
 
-
+    /// Get a list of data for this channel.
+    /// 
+    /// For example, you can get an FFT data list for the current sample data being played
+    /// 
+    /// See [`Here`](https://www.un4seen.com/doc/#bass/BASS_ChannelGetData.html) for more info
     pub fn get_data(&self, mode: DataType, length:impl IntoLen) -> BassResult<Vec<f32>> {
         let mut data:Vec<f32> = Vec::with_capacity(length.into_len() as usize);
         // fill in data
@@ -95,18 +146,42 @@ impl Channel {
         Ok(data)
     }
 
+
     // convenience functions
+
+    /// Get the volume for this channel
+    /// 
+    /// Alias for ```
+    /// self.get_attribute(Volume)
+    /// ```
     pub fn get_volume(&self) -> BassResult<f32> {
         self.get_attribute(ChannelAttribute::Volume)
     }
+    
+    /// Set the volume for this channel
+    /// 
+    /// Alias for ```
+    /// self.set_attribute(Volume, vol)
+    /// ```
     pub fn set_volume(&self, vol: f32) -> BassResult<()> {
         self.set_attribute(ChannelAttribute::Volume, vol)
     }
 
 
+    /// Get the volume for this channel
+    /// 
+    /// Alias for ```
+    /// self.get_attribute(Frequency) / self.default_frequency
+    /// ```
     pub fn get_rate(&self) -> BassResult<f32> {
         Ok(self.get_attribute(ChannelAttribute::Frequency)? / self.default_frequency)
     }
+
+    /// Set the playback rate for this channel
+    /// 
+    /// Alias for ```
+    /// self.set_attribute(Frequency, self.default_frequency * rate)
+    /// ```
     pub fn set_rate(&self, rate: f32) -> BassResult<()> {
         self.set_attribute(ChannelAttribute::Frequency, self.default_frequency * rate)
     }

@@ -3,6 +3,20 @@ use std::sync::Arc;
 
 use crate::prelude::*;
 
+/// ## Stream channel. 
+/// 
+/// Use this if you want to play audio from memory
+/// 
+/// See [`here`](https://www.un4seen.com/doc/#bass/BASS_StreamCreate.html) for more information
+/// 
+/// # Usage
+/// 
+/// Create a new stream channel with [`StreamChannel::create_from_memory`](#method.create_from_memory)
+/// 
+/// See [`Channel`] for further documentation
+/// 
+/// # Dropping
+/// See [`Channel`] for drop behaviour
 #[derive(Clone)]
 pub struct StreamChannel {
     pub channel: Channel,
@@ -11,6 +25,12 @@ pub struct StreamChannel {
     _data: Arc<Vec<u8>>
 }
 impl StreamChannel {
+    /// Create a StreamChannel from bytes in memory
+    /// ```
+    /// let bytes = std::fs::read(path.as_ref())?;
+    /// let channel = StreamChannel::create_from_memory(bytes, 0i32).expect("Error creating stream channel")
+    /// channel.play().expect("error playing channel");
+    /// ```
     pub fn create_from_memory(bytes: Vec<u8>, offset: impl IntoLen) -> BassResult<Self> {
         // create the stream
         let handle = bass_sys::BASS_StreamCreateFile(

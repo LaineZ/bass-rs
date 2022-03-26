@@ -3,6 +3,21 @@ use std::sync::Arc;
 
 use crate::prelude::*;
 
+
+/// ## Sample channel. 
+/// 
+/// Use this if you want to play audio multiple times at once
+/// 
+/// See [`here`](https://www.un4seen.com/doc/#bass/BASS_SampleCreate.html) for more information
+/// 
+/// # Usage
+/// 
+/// Create a new sample channel with [`SampleChannel::load_from_memory`](#method.load_from_memory)
+/// 
+/// See [`Channel`] for further documentation
+/// 
+/// # Dropping
+/// See [`Channel`] for drop behaviour
 #[derive(Clone)]
 pub struct SampleChannel {
     handle: Arc<u32>,
@@ -23,6 +38,12 @@ impl SampleChannel {
         Ok(sc)
     }
 
+    /// Create a StreamChannel from bytes in memory
+    /// ```
+    /// let bytes = std::fs::read(path.as_ref())?;
+    /// let channel = SampleChannel::load_from_memory(bytes, 0i32, 32).expect("Error creating sample channel")
+    /// channel.play().expect("error playing channel");
+    /// ```
     pub fn load_from_memory(data: Vec<u8>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
         Self::new(check_bass_err!(BASS_SampleLoad(
             true.ibool(), 
@@ -34,6 +55,9 @@ impl SampleChannel {
         )), data)
     }
 
+    /// Get the latest underlying channel for this stream channel
+    /// 
+    /// Returns an error if there was a problem getting the channel
     pub fn get_channel(&mut self) -> BassResult<Channel> {
         self.newest_channel = Channel::new(check_bass_err!(BASS_SampleGetChannel(*self.handle, false.ibool() as u32)));
         if !self.channels.contains(&self.newest_channel) {

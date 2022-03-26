@@ -2,6 +2,19 @@ use std::{ops::Deref, sync::Arc};
 
 use crate::prelude::*;
 
+/// ## Music Channel
+/// 
+/// Note! this is untested and probably unfinished
+/// 
+/// Use this if you want to use MOD music
+/// 
+/// see [`Here`](https://www.un4seen.com/doc/#bass/BASS_MusicLoad.html) for more info
+/// 
+/// See [`Channel`] for further documentation
+/// 
+/// # Dropping
+/// 
+/// See [`Channel`] for drop behaviour
 #[derive(Clone)]
 pub struct MusicChannel {
     channel: Channel,
@@ -12,6 +25,8 @@ pub struct MusicChannel {
 
 // statics
 impl MusicChannel {
+
+    /// Load a MOD music file from memory
     pub fn load_from_memory(data: Vec<u8>, offset: impl IntoLen, flags: u32, freq: u32) -> BassResult<Self> {
         let handle = check_bass_err!(BASS_MusicLoad(
             true.ibool(), 

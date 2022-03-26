@@ -2,7 +2,9 @@ use crate::{prelude::*};
 use std::ffi::CStr;
 use std::fmt::Display;
 
-
+/// an input or output device for use with bass
+/// 
+/// id -1 is the default device
 pub struct BassDevice {
     pub id: u32,
     pub name: String,
@@ -10,6 +12,9 @@ pub struct BassDevice {
     pub flags: Vec<DeviceFlags>
 }
 impl BassDevice {
+    /// Get a list of all audio devices connected to the system
+    /// 
+    /// Returns an error if there was a problem retreiving info for a device
     pub fn get_all_devices() -> BassResult<Vec<BassDevice>> {
         let mut list = Vec::new();
 
@@ -47,7 +52,9 @@ impl BassDevice {
 }
 
 impl BassDevice {
-    /// use this device
+    /// Use this device
+    /// 
+    /// Returns an error if there was a problem setting this device
     pub fn set(&self) -> BassResult<()> {
         check_bass_err!(BASS_SetDevice(self.id));
         Ok(())
