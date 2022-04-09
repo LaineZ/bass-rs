@@ -152,7 +152,7 @@ impl Channel {
     /// Get the volume for this channel
     /// 
     /// Alias for 
-    /// ```
+    /// ```ignore
     /// self.get_attribute(Volume)
     /// ```
     pub fn get_volume(&self) -> BassResult<f32> {
@@ -162,7 +162,7 @@ impl Channel {
     /// Set the volume for this channel
     /// 
     /// Alias for 
-    /// ```
+    /// ```ignore
     /// self.set_attribute(Volume, vol)
     /// ```
     pub fn set_volume(&self, vol: f32) -> BassResult<()> {
@@ -173,7 +173,7 @@ impl Channel {
     /// Get the volume for this channel
     /// 
     /// Alias for 
-    /// ```
+    /// ```ignore
     /// self.get_attribute(Frequency) / self.default_frequency
     /// ```
     pub fn get_rate(&self) -> BassResult<f32> {
@@ -183,7 +183,7 @@ impl Channel {
     /// Set the playback rate for this channel
     /// 
     /// Alias for 
-    /// ```
+    /// ```ignore
     /// self.set_attribute(Frequency, self.default_frequency * rate)
     /// ```
     pub fn set_rate(&self, rate: f32) -> BassResult<()> {

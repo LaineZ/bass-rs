@@ -38,8 +38,8 @@ impl SampleChannel {
         Ok(sc)
     }
 
-    /// Create a StreamChannel from bytes in memory
-    /// ```
+    /// Create a SampleChannel from bytes in memory
+    /// ```ignore
     /// let bytes = std::fs::read(path.as_ref())?;
     /// let channel = SampleChannel::load_from_memory(bytes, 0i32, 32).expect("Error creating sample channel")
     /// channel.play().expect("error playing channel");
@@ -55,6 +55,24 @@ impl SampleChannel {
         )), data)
     }
 
+    /// Create a SampleChannel from a path
+    /// ```ignore
+    /// let path = "path_to_mp3";
+    /// let channel = SampleChannel::load_from_path(path, 0i32, 32).expect("Error creating sample channel")
+    /// channel.play().expect("error playing channel");
+    /// ```
+    pub fn load_from_path(path: impl AsRef<str>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
+        let path = path.as_ref();
+        Self::new(check_bass_err!(BASS_SampleLoad(
+            false.ibool(), 
+            path.as_ptr() as *const c_void, 
+            offset.into_len(), 
+            0, 
+            max_channels, 
+            BASS_SAMPLE_OVER_POS
+        )), Vec::new())
+    }
+
     /// Get the latest underlying channel for this stream channel
     /// 
     /// Returns an error if there was a problem getting the channel
@@ -65,6 +83,21 @@ impl SampleChannel {
         }
         Ok(self.newest_channel.clone())
     }
+
+
+    /// alias for load_from_memory
+    /// maintains backwards compatability
+    #[deprecated]
+    pub fn create_from_memory(data: Vec<u8>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
+        Self::load_from_memory(data, offset, max_channels)
+    }
+
+    /// alias for load_from_path
+    /// maintains backwards compatability
+    #[deprecated]
+    pub fn create_from_path(path: impl AsRef<str>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
+        Self::load_from_path(path, offset, max_channels)
+    }
 }
 impl Drop for SampleChannel {
     fn drop(&mut self) {
@@ -72,7 +105,7 @@ impl Drop for SampleChannel {
         if count == 1 {
             // need to free the bass channel
             if BASS_SampleFree(*self.handle) == 0 {
-                panic!("error dropping sample")
+                panic!("error dropping sample ")
             }
         }
     }

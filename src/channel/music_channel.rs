@@ -37,10 +37,27 @@ impl MusicChannel {
             freq
         ));
         
-        //TODO!: is there more checking we need to do?
+        // TODO!: is there more checking we need to do?
         Ok(Self {
             channel: Channel::new(handle),
             _data: Arc::new(data)
+        })
+    }
+
+    pub fn load_from_path(path: impl AsRef<str>, offset: impl IntoLen, flags: u32, freq: u32) -> BassResult<Self> {
+        let handle = check_bass_err!(BASS_MusicLoad(
+            false.ibool(), 
+            path.as_ref().as_ptr() as *const c_void, 
+            offset.into_len(), 
+            0, 
+            flags, 
+            freq
+        ));
+        
+        // TODO!: is there more checking we need to do?
+        Ok(Self {
+            channel: Channel::new(handle),
+            _data: Arc::new(Vec::new())
         })
     }
 }

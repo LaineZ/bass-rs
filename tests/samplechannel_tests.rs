@@ -1,14 +1,12 @@
 use bass_rs::prelude::*;
 
-pub fn stream_channel_tests() -> BassResult<()> {
+pub fn sample_channel_tests() -> BassResult<()> {
 
     // read test file
     let stream = {
         let file_path = "./test.mp3";
-        let bytes = std::fs::read(file_path).expect("Error reading ./test.mp3");
-
         // create stream
-        let stream = StreamChannel::load_from_memory(bytes, 0)?;
+        let stream = SampleChannel::load_from_path(file_path, 0, 32)?;
         stream
     };
 

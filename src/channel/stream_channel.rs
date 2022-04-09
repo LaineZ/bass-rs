@@ -26,15 +26,15 @@ pub struct StreamChannel {
 }
 impl StreamChannel {
     /// Create a StreamChannel from bytes in memory
-    /// ```
+    /// ```ignore
     /// let bytes = std::fs::read(path.as_ref())?;
-    /// let channel = StreamChannel::create_from_memory(bytes, 0i32).expect("Error creating stream channel")
+    /// let channel = StreamChannel::load_from_memory(bytes, 0i32).expect("Error creating stream channel")
     /// channel.play().expect("error playing channel");
     /// ```
-    pub fn create_from_memory(bytes: Vec<u8>, offset: impl IntoLen) -> BassResult<Self> {
+    pub fn load_from_memory(bytes: Vec<u8>, offset: impl IntoLen) -> BassResult<Self> {
         // create the stream
         let handle = bass_sys::BASS_StreamCreateFile(
-            1,
+            true.ibool(),
             bytes.as_ptr() as *const c_void,
             offset.into_len(),
             bytes.len() as u64,
@@ -53,10 +53,53 @@ impl StreamChannel {
         })
     }
 
+    /// Create a StreamChannel from a path
+    /// ```ignore
+    /// let bytes = "path_to_file";
+    /// let channel = StreamChannel::load_from_path(path, 0i32).expect("Error creating stream channel")
+    /// channel.play().expect("error playing channel");
+    /// ```
+    pub fn load_from_path(path: impl AsRef<str>, offset: impl IntoLen) -> BassResult<Self> {
+        let path = path.as_ref();
+        // create the stream
+        let handle = bass_sys::BASS_StreamCreateFile(
+            false.ibool(),
+            path.as_ptr() as *const c_void,
+            offset.into_len(),
+            0,
+            BASS_STREAM_PRESCAN
+        );
+        // check for an error when creating the stream
+        check_bass_err!(handle);
+
+        // double check the channel is valid
+        check_bass_err!(bass_sys::BASS_ChannelGetInfo(handle, &mut new_channel_info()));
+
+        // should be good to go from here
+        Ok(Self {
+            channel: Channel::new(handle),
+            _data: Arc::new(Vec::new())
+        })
+    }
+
     // pub fn create(freq: u64, ) -> BassResult<Self> {
     //     BASS_StreamCreate(freq, channels, flags, )
     // }
 
+    
+    /// alias for load_from_memory
+    /// maintains backwards compatability
+    #[deprecated]
+    pub fn create_from_memory(bytes: Vec<u8>, offset: impl IntoLen) -> BassResult<Self> {
+        Self::load_from_memory(bytes, offset)
+    }
+
+    /// alias for load_from_path
+    /// maintains backwards compatability
+    #[deprecated]
+    pub fn create_from_path(path: impl AsRef<str>, offset: impl IntoLen) -> BassResult<Self> {
+        Self::load_from_path(path, offset)
+    }
 }
 impl Deref for StreamChannel {
     type Target = Channel;
@@ -67,7 +110,7 @@ impl Deref for StreamChannel {
 }
 impl Drop for StreamChannel {
     fn drop(&mut self) {
-        let count = Arc::<u32>::strong_count(&self.handle);
+        let count = Arc::strong_count(&self.handle);
         if count == 1 {
             // need to free the bass channel
             if BASS_StreamFree(*self.channel.handle) == 0 {

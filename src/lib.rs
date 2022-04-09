@@ -59,7 +59,7 @@ impl Bass {
     /// Init Bass with default flags and no window pointer
     /// 
     /// Device is default (-1), flags are BASS_DEVICE_LATENCY, window pointer is 0
-    /// ```
+    /// ```ignore
     /// let bass = Bass::init_default().expect("Error initializing Bass");
     /// ```
     pub fn init_default() -> BassResult<Self> {
@@ -70,7 +70,7 @@ impl Bass {
     /// 
     /// Device is default (-1), flags are BASS_DEVICE_LATENCY
     /// 
-    /// ```
+    /// ```ignore
     /// // create a glfw window
     /// use glfw::{Action, Context, Key, WindowMode::Windowed};
     /// let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
