@@ -37,7 +37,10 @@ impl MusicChannel {
             freq
         ));
         
-        // TODO!: is there more checking we need to do?
+        //TODO!: is there more checking we need to do?
+
+        #[cfg(feature="drop_debug")] 
+        println!("created music channel id: {}", handle);
         Ok(Self {
             channel: Channel::new(handle),
             _data: Arc::new(data)
@@ -89,6 +92,9 @@ impl Drop for MusicChannel {
     fn drop(&mut self) {
         let count = Arc::<u32>::strong_count(&self.handle);
         if count == 1 {
+            #[cfg(feature="drop_debug")] 
+            println!("dropping music channel id: {}", self.channel.handle);
+
             // need to free the bass channel
             if BASS_StreamFree(*self.channel.handle) == 0 {
                 panic!("error dropping music channel: {:?}", BassError::get_last_error())

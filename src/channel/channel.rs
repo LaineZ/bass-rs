@@ -190,15 +190,15 @@ impl Channel {
         self.set_attribute(ChannelAttribute::Frequency, self.default_frequency * rate)
     }
 }
-impl Drop for Channel {
-    fn drop(&mut self) {
-        #[cfg(feature="drop_debug")]
-        if count == 1 {
-            let count = Arc::<u32>::strong_count(&self.handle);
-            println!("channel getting dropped: {}", self.handle)
-        }
-    }
-}
+// #[cfg(feature="drop_debug")]
+// impl Drop for Channel {
+//     fn drop(&mut self) {
+//         let count = Arc::<u32>::strong_count(&self.handle);
+//         if count == 1 {
+//             println!("channel getting dropped: {}", self.handle)
+//         }
+//     }
+// }
 
 
 const ERROR_MAP: Lazy<HashMap<u32, PlaybackState>> = Lazy::new(|| {

@@ -35,6 +35,8 @@ impl SampleChannel {
         };
         sc.get_channel()?;
 
+        #[cfg(feature="drop_debug")] 
+        println!("created sample channel id: {}", handle);
         Ok(sc)
     }
 
@@ -98,11 +100,19 @@ impl SampleChannel {
     pub fn create_from_path(path: impl AsRef<str>, offset: impl IntoLen, max_channels: u32) -> BassResult<Self> {
         Self::load_from_path(path, offset, max_channels)
     }
+    /// for debugging
+    pub fn get_channels(&self) -> &Vec<Channel> {
+        &self.channels
+    }
+
 }
 impl Drop for SampleChannel {
     fn drop(&mut self) {
         let count = Arc::<u32>::strong_count(&self.handle);
         if count == 1 {
+            #[cfg(feature="drop_debug")] 
+            println!("dropping sample channel id: {}", self.handle);
+
             // need to free the bass channel
             if BASS_SampleFree(*self.handle) == 0 {
                 panic!("error dropping sample ")

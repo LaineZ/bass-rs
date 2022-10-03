@@ -47,6 +47,8 @@ impl StreamChannel {
         check_bass_err!(bass_sys::BASS_ChannelGetInfo(handle, &mut new_channel_info()));
 
         // should be good to go from here
+        #[cfg(feature="drop_debug")] 
+        println!("created stream channel id: {}", handle);
         Ok(Self {
             channel: Channel::new(handle),
             _data: Arc::new(bytes)
@@ -112,6 +114,9 @@ impl Drop for StreamChannel {
     fn drop(&mut self) {
         let count = Arc::strong_count(&self.handle);
         if count == 1 {
+            #[cfg(feature="drop_debug")] 
+            println!("dropping stream channel id: {}", self.channel.handle);
+
             // need to free the bass channel
             if BASS_StreamFree(*self.channel.handle) == 0 {
                 panic!("error dropping stream: {:?}", BassError::get_last_error())
