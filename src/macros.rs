@@ -15,10 +15,11 @@ macro_rules! check_bass_err {
 #[macro_export]
 macro_rules! check_bass_err_val {
     ($check:expr, $err_val:expr) => {
-        {
-            $crate::check_bass_err_bool!($check == $err_val);
-            $check
-        }
+        {{
+            let n = $check; // this prevents $check running multiple times if it is not a variable, but a function call
+            $crate::check_bass_err_bool!(n == $err_val);
+            n
+        }}
     };
 }
 
