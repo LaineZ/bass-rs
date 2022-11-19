@@ -1,6 +1,6 @@
 [package]
 name = "bass-rs"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 license = "GPL-2.0-or-later"
 description = "un4seen Bass for Rust with a nice api"
@@ -14,5 +14,5 @@ bass_fx = []
 
 
 [dependencies]
-bass-sys = "2.1.0"
-once_cell = "1.8"
+bass-sys = "2.2.0"
+once_cell = "1.16"

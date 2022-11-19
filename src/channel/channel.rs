@@ -54,6 +54,20 @@ impl Channel {
         Ok(())
     }
 
+    /// Get the length of the channel in bytes
+    /// 
+    /// Returns an error if the length is not avaiable
+    pub fn get_length(&self) -> BassResult<u64> {
+        Ok(check_bass_err!(BASS_ChannelGetLength(*self.handle, BASS_POS_BYTE)))
+    }
+
+    /// Get the length of the channel in seconds
+    /// 
+    /// Returns an error if the length is not avaiable
+    pub fn get_length_seconds(&self) -> BassResult<f64> {
+        let len_bytes = check_bass_err!(BASS_ChannelGetLength(*self.handle, BASS_POS_BYTE));
+        Self::bytes2seconds(&self, len_bytes)
+    }
 
     /// get the position of the audio in ms
     /// 
@@ -83,6 +97,7 @@ impl Channel {
         check_bass_err_bool!(secs < 0.0);
         Ok(secs)
     }
+    
     /// Get the byte index at the current time in seconds
     /// 
     /// Returns an error if there was a problem with the conversion (ie secs > len)
@@ -189,6 +204,9 @@ impl Channel {
     pub fn set_rate(&self, rate: f32) -> BassResult<()> {
         self.set_attribute(ChannelAttribute::Frequency, self.default_frequency * rate)
     }
+
+
+
 }
 // #[cfg(feature="drop_debug")]
 // impl Drop for Channel {
