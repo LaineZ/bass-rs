@@ -1,4 +1,5 @@
 use std::ops::Deref;
+use std::ptr::{null, null_mut};
 use std::sync::Arc;
 
 use crate::prelude::*;
@@ -70,6 +71,30 @@ impl StreamChannel {
             offset.into_len(),
             0,
             BASS_STREAM_PRESCAN
+        );
+        // check for an error when creating the stream
+        check_bass_err!(handle);
+
+        // double check the channel is valid
+        check_bass_err!(bass_sys::BASS_ChannelGetInfo(handle, &mut new_channel_info()));
+
+        // should be good to go from here
+        Ok(Self {
+            channel: Channel::new(handle),
+            _data: Arc::new(Vec::new())
+        })
+    }
+
+    /// Create a StreamChannel from a URL
+    pub fn load_from_url(url: impl AsRef<str>, offset: impl IntoLen) -> BassResult<Self> {
+        let url = url.as_ref();
+        // create the stream
+        let handle = bass_sys::BASS_StreamCreateURL(
+            url.as_ptr() as *const i8,
+            offset.into_len() as u32,
+            BASS_STREAM_PRESCAN,
+            null::<DOWNLOADPROC>() as _,
+            null_mut() as *mut c_void,
         );
         // check for an error when creating the stream
         check_bass_err!(handle);
