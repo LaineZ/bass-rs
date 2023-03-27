@@ -152,8 +152,66 @@ pub enum BassError {
     /// Some other mystery error
     Unknown(i32),
 }
-impl BassError {
 
+impl std::fmt::Display for BassError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match &self {
+            BassError::Ok => write!(f, "All is OK"),
+            BassError::Mem => write!(f, "Memory error"),
+            BassError::FileOpen => write!(f, "Can't open the file or stream"),
+            BassError::Driver => write!(f, "Can't find a free or valid driver"),
+            BassError::BufLost => write!(f, "The sample buffer was lost"),
+            BassError::Handle => write!(f, "Invalid handle"),
+            BassError::Format => write!(f, "Unsupported sample format"),
+            BassError::Position => write!(f, "Invalid playback position"),
+            BassError::Init => write!(f, "General BASS library initialization failed"),
+            BassError::Start => write!(f, "BASS was fail to start"),
+            BassError::Nocd => write!(f, "No CD in drive"),
+            BassError::Cdtrack => write!(f, "Inavlid CD track number"),
+            BassError::Already => write!(f, "Already initialized/paused/whatever "),
+            BassError::Nopause => write!(f, "Not paused"),
+            BassError::Notaudio => write!(f, "Not an audio track"),
+            BassError::Nochan => write!(f, "Can't get a free channel"),
+            BassError::Illtype => write!(f, "An illegal type was specified"),
+            BassError::Illparam => write!(f, "An illegal parameter was specified"),
+            BassError::No3d => write!(f, "No 3D support"),
+            BassError::Noeax => write!(f, "No EAX suppoer"),
+            BassError::Device => write!(f, "Illegal device number"),
+            BassError::Noplay => write!(f, "Not playing"),
+            BassError::Freq => write!(f, "Illegal sample rate"),
+            BassError::Notfile => write!(f, "The stream is not a file stream"),
+            BassError::Nohw => write!(f, "No hardware voices available"),
+            BassError::Empty => write!(f, "The MOD music has no sequence data"),
+            BassError::Nonet => write!(f, "No internet connection could be opened"),
+            BassError::Create => write!(f, "Couldn't create the file"),
+            BassError::Nofx => write!(f, "Effects are not available"),
+            BassError::Playing => write!(f, "The channel is playing"),
+            BassError::Notavail => write!(f, "Requested data is not available"),
+            BassError::Decode => write!(f, "The channel is a 'decoding channel'"),
+            BassError::Dx => write!(f, "A sufficient DirectX version is not installed"),
+            BassError::Timeout => write!(f, "Connection timedout"),
+            BassError::Fileform => write!(f, "Unsupported file format"),
+            BassError::Speaker => write!(f, "Unavailable speaker"),
+            BassError::Version => write!(f, "Invalid BASS version"),
+            BassError::Codec => write!(f, "Codec is not available or supported"),
+            BassError::Ended => write!(f, "The channel or file has ended"),
+            BassError::Busy => write!(f, "The device is busy (eg. in \"exclusive\" use by another process)"),
+            BassError::WmaLicense => write!(f, "BassWma: the file is protected"),
+            BassError::WmaWm9 => write!(f, "BassWma: WM9 is required"),
+            BassError::WmaDenied => write!(f, "BassWma: access denied (user or password is invalid)"),
+            BassError::WmaCodec => write!(f, "BassWma: no appropriate codec is installed "),
+            BassError::WmaIndividual => write!(f, "BassWma: individualization is needed"),
+            BassError::AcmCancel => write!(f, "BassEnc: ACM codec selection cancelled"),
+            BassError::CastDenied => write!(f, "BassEnc: Access denied (invalid password)"),
+            BassError::Wasapi => write!(f, "BASSWASAPI: no WASAPI available"),
+            BassError::Mp4Nostream => write!(f, "BASS_AAC: non-streamable due to MP4 atom order ('mdat' before 'moov')"),
+            BassError::Unknown(err) => write!(f, "Unknown error code: {}", err),
+        }
+    }
+}
+
+
+impl BassError {
     /// get the corresponding error for an error code
     pub fn from_code(bass_err:i32) -> Self {
         if let Some(&err) = ERROR_MAP.get(&bass_err) {
