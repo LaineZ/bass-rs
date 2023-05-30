@@ -48,7 +48,7 @@ impl Bass {
 
         check_bass_err!(bass_sys::BASS_Init(
             device.id as i32, 
-            44100, 
+            frequency, 
             flags, 
             window_ptr as *mut c_void, 
             std::ptr::null::<c_void>() as *mut c_void
@@ -64,6 +64,12 @@ impl Bass {
     /// ```
     pub fn init_default() -> BassResult<Self> {
         Self::init_default_with_ptr(0 as *mut c_void)
+    }
+
+    /// Init bass with default flags with specified device
+    pub fn init_with_device(device: BassDevice) -> BassResult<Self> {
+        check_bass_err!(bass_sys::BASS_Init(device.id as i32, 44100, BASS_DEVICE_LATENCY, 0 as *mut c_void, std::ptr::null::<c_void>() as *mut c_void));
+        Ok(Self::new())
     }
 
     /// Init Bass with default flags and a window pointer
