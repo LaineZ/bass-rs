@@ -21,7 +21,7 @@ pub fn test() {
 
 
     // init bass
-    let bass = __bass_check!(Bass::init_default());
+    let bass = __bass_check!(Bass::builder().build());
 
     // check test.mp3 exists before testing channels
     if !Path::new("./test.mp3").exists() {
