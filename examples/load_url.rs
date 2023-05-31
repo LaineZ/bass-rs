@@ -1,4 +1,4 @@
-use bass_rs::{Bass, prelude::{StreamChannel, PlaybackState}};
+use bass_rs::{Bass, prelude::StreamChannel};
 
 fn main() {
     let _bass = Bass::builder().build().expect("Unable to initialize BASS!");

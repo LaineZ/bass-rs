@@ -71,23 +71,27 @@ impl BassBuilder {
     }
 
     /// Specifies playback audio device for initialization
-    pub fn device(mut self, device: BassDevice) {
+    pub fn device(mut self, device: BassDevice) -> BassBuilder {
         self.device_id = device.id as i32;
+        self
     }
 
-    /// Specifies output sample rate for device 
-    pub fn frequency(mut self, freq: u32) {
+    /// Specifies output sample rate for device
+    pub fn frequency(mut self, freq: u32) -> BassBuilder {
         self.frequency = freq;
+        self
     }
 
     /// BASS Initialization flags
-    pub fn flag(mut self, flag: InitFlags) {
+    pub fn flag(mut self, flag: InitFlags) -> BassBuilder {
         self.flags.push(flag);
+        self
     }
 
-    /// The application's main window handle... This is only needed when using DirectSound output. 
-    pub fn window_ptr<W>(mut self, window_ptr: *mut W) {
+    /// The application's main window handle... This is only needed when using DirectSound output.
+    pub fn window_ptr<W>(mut self, window_ptr: *mut W) -> BassBuilder {
         self.window_ptr = window_ptr as *mut c_void;
+        self
     }
 
     /// Initializes a bass library
